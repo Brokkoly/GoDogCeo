@@ -31,3 +31,13 @@ func TestRandomBreedImage(t *testing.T) {
 		t.Error("Recieved an empty image string")
 	}
 }
+
+func TestRandomSubBreedImage(t *testing.T) {
+	image, err := GetRandomSubBreedImage("bulldog", "french")
+	if err != nil {
+		t.Error(err)
+	}
+	if image == "" {
+		t.Error("Recieved an empty image string")
+	}
+}

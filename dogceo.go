@@ -82,3 +82,26 @@ func GetRandomBreedImage(breed string) (string, error) {
 	json.Unmarshal(body, &image)
 	return image.Message, nil
 }
+
+//GetRandomSubBreedImage gets a random image for a certain subbreed, the way
+//dog.ceo does error handing means that you don't have to put a correct subbreed.
+func GetRandomSubBreedImage(breed, subbreed string) (string, error) {
+	var image DogImage
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://dog.ceo/api/breed/"+breed+"/"+subbreed+"/images/random", nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("User-Agent", "GoDogCeo/0.1")
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	json.Unmarshal(body, &image)
+	return image.Message, nil
+}
