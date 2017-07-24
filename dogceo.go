@@ -1,8 +1,7 @@
-package main
+package godogceo
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -62,10 +61,24 @@ func GetRandomImage() (string, error) {
 	return image.Message, nil
 }
 
-func main() {
-	breeds, err := GetRandomImage()
+//GetRandomBreedImage gets a random image from a certain breed
+func GetRandomBreedImage(breed string) (string, error) {
+	var image DogImage
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://dog.ceo/api/breed/"+breed+"/images/random", nil)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	fmt.Println(breeds)
+	req.Header.Set("User-Agent", "GoDogCeo/0.1")
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	json.Unmarshal(body, &image)
+	return image.Message, nil
 }
